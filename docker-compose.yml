@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    container_name: gas-backend
+    restart: always
+    volumes:
+      - ./backend/instance:/app/instance
+      - ./backend/uploads:/app/uploads
+    environment:
+      - FLASK_APP=run.py
+      - FLASK_ENV=production
+    ports:
+      - "5010:5010"
+
+  frontend:
+    build: ./frontend
+    container_name: gas-frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  instance:
+  uploads:
