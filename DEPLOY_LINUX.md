@@ -1,27 +1,27 @@
 # Linux 云服务器部署指南
 
-## 🚀 一键部署(推荐)
+## 🚀 一键部�?推荐)
 
-### 方式一:完整自动化安装
+### 方式一:完整自动化安�?
 
-适用于全新的云服务器,会自动安装 Docker、Git 等依赖。
+适用于全新的云服务器,会自动安�?Docker、Git 等依赖�?
 
 ```bash
-# 下载并运行安装脚本
+# 下载并运行安装脚�?
 curl -fsSL https://raw.githubusercontent.com/yuyuyu6631/rqglsys/main/install.sh -o install.sh
 chmod +x install.sh
 sudo bash install.sh
 ```
 
-或者直接一行命令:
+或者直接一行命�?
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/yuyuyu6631/rqglsys/main/install.sh | sudo bash
 ```
 
-### 方式二:已有 Docker 环境
+### 方式�?已有 Docker 环境
 
-如果服务器已经安装了 Docker 和 Docker Compose:
+如果服务器已经安装了 Docker �?Docker Compose:
 
 ```bash
 # 克隆项目
@@ -38,7 +38,7 @@ chmod +x deploy.sh
 - **操作系统**: Ubuntu 18.04+, Debian 10+, CentOS 7+
 - **内存**: 至少 1GB RAM (推荐 2GB+)
 - **磁盘**: 至少 5GB 可用空间
-- **端口**: 需要开放 80 和 5010 端口
+- **端口**: 需要开�?80 �?5010 端口
 
 ## 🔧 手动部署步骤
 
@@ -46,7 +46,7 @@ chmod +x deploy.sh
 
 **Ubuntu/Debian:**
 ```bash
-# 更新包索引
+# 更新包索�?
 sudo apt-get update
 
 # 安装依赖
@@ -85,7 +85,7 @@ sudo systemctl enable docker
 ### 2. 安装 Docker Compose
 
 ```bash
-# 下载最新版本
+# 下载最新版�?
 sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 
 # 添加执行权限
@@ -98,9 +98,9 @@ docker-compose --version
 ### 3. 克隆项目
 
 ```bash
-# 安装 Git (如果未安装)
+# 安装 Git (如果未安�?
 sudo apt-get install -y git  # Ubuntu/Debian
-# 或
+# �?
 sudo yum install -y git       # CentOS
 
 # 克隆项目
@@ -111,17 +111,17 @@ cd rqglsys
 ### 4. 启动服务
 
 ```bash
-# 构建并启动
+# 构建并启�?
 docker-compose up -d --build
 
-# 等待服务启动 (约30秒)
+# 等待服务启动 (�?0�?
 sleep 30
 
 # 初始化数据库
-docker exec -it gas-backend python app/seed.py
+docker exec -it gas-backend python -m app.seed
 ```
 
-### 5. 配置防火墙
+### 5. 配置防火�?
 
 **使用 firewalld (CentOS):**
 ```bash
@@ -136,30 +136,30 @@ sudo ufw allow 80/tcp
 sudo ufw allow 5010/tcp
 ```
 
-**阿里云/腾讯云安全组:**
-- 在云服务器控制台添加安全组规则
-- 开放入站端口: 80, 5010
+**阿里�?腾讯云安全组:**
+- 在云服务器控制台添加安全组规�?
+- 开放入站端�? 80, 5010
 
 ## 🌐 访问应用
 
-部署完成后,通过以下地址访问:
+部署完成�?通过以下地址访问:
 
 - **前端**: `http://你的服务器IP`
 - **后端 API**: `http://你的服务器IP:5010/api`
 
 ## 🔐 默认账户
 
-| 角色 | 用户名 | 密码 |
+| 角色 | 用户�?| 密码 |
 |------|--------|------|
-| 管理员 | admin | 123456 |
+| 管理�?| admin | 123456 |
 | 站长 | station1 | 123456 |
 | 配送员 | delivery1 | 123456 |
-| 普通用户 | user1 | 123456 |
+| 普通用�?| user1 | 123456 |
 
 ## 📊 常用命令
 
 ```bash
-# 查看容器状态
+# 查看容器状�?
 docker-compose ps
 
 # 查看日志
@@ -177,10 +177,10 @@ docker-compose restart
 # 停止服务
 docker-compose down
 
-# 更新代码并重启
+# 更新代码并重�?
 git pull origin main
 docker-compose up -d --build
-docker exec -it gas-backend python app/seed.py
+docker exec -it gas-backend python -m app.seed
 ```
 
 ## 🔍 故障排查
@@ -191,7 +191,7 @@ docker exec -it gas-backend python app/seed.py
 # 查看详细日志
 docker-compose logs
 
-# 检查端口占用
+# 检查端口占�?
 sudo netstat -tulpn | grep -E '80|5010'
 
 # 重新构建
@@ -202,9 +202,9 @@ docker-compose up -d --build
 ### 数据库初始化失败
 
 ```bash
-# 进入容器手动初始化
+# 进入容器手动初始�?
 docker exec -it gas-backend bash
-python app/seed.py
+python -m app.seed
 exit
 ```
 
@@ -213,36 +213,36 @@ exit
 1. 检查防火墙规则
 2. 检查云服务器安全组设置
 3. 确认容器正在运行: `docker-compose ps`
-4. 检查健康状态: `curl http://localhost:5010/api/health`
+4. 检查健康状�? `curl http://localhost:5010/api/health`
 
 ## 🔄 更新部署
 
 ```bash
 # 进入项目目录
-cd /opt/gas-system  # 或你的项目目录
+cd /opt/gas-system  # 或你的项目目�?
 
-# 拉取最新代码
+# 拉取最新代�?
 git pull origin main
 
-# 重新构建并启动
+# 重新构建并启�?
 docker-compose down
 docker-compose up -d --build
 
-# 如果数据库结构有变化,重新初始化
-docker exec -it gas-backend python app/seed.py
+# 如果数据库结构有变化,重新初始�?
+docker exec -it gas-backend python -m app.seed
 ```
 
-## 🛡️ 生产环境建议
+## 🛡�?生产环境建议
 
-1. **修改默认密码**: 首次登录后立即修改所有默认账户密码
+1. **修改默认密码**: 首次登录后立即修改所有默认账户密�?
 2. **配置 HTTPS**: 使用 Nginx 反向代理配置 SSL 证书
-3. **定期备份**: 备份 `backend/instance/gas_system.db` 数据库文件
-4. **监控日志**: 定期检查应用日志
-5. **资源监控**: 监控服务器 CPU、内存使用情况
+3. **定期备份**: 备份 `backend/instance/gas_system.db` 数据库文�?
+4. **监控日志**: 定期检查应用日�?
+5. **资源监控**: 监控服务�?CPU、内存使用情�?
 
-## 📞 技术支持
+## 📞 技术支�?
 
-如遇问题,请查看:
+如遇问题,请查�?
 - GitHub Issues: https://github.com/yuyuyu6631/rqglsys/issues
 - 项目文档: [README.md](README.md)
 - Docker 文档: [README_DOCKER.md](README_DOCKER.md)

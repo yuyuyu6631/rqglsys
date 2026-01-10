@@ -73,7 +73,7 @@ source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 
 # 初始化数据库
-python app/seed.py
+python -m app.seed
 
 # 启动开发服务器
 python run.py

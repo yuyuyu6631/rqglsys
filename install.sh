@@ -304,7 +304,7 @@ init_database() {
     fi
     
     # 初始化种子数据
-    docker exec gas-backend python app/seed.py
+    docker exec gas-backend python -m app.seed
     print_success "数据库初始化完成"
 }
 

@@ -50,7 +50,7 @@ echo ""
 
 # 初始化数据库
 echo "4. 初始化数据库..."
-docker exec -it gas-backend python app/seed.py
+docker exec -it gas-backend python -m app.seed
 echo ""
 
 echo "========================================="

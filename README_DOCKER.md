@@ -21,7 +21,7 @@ docker-compose up -d --build
 
 ```bash
 # 初始化基础数据(用户、钢瓶、公告等)
-docker exec -it gas-backend python app/seed.py
+docker exec -it gas-backend python -m app.seed
 ```
 
 如果需要更多演示数据,可以运行:
