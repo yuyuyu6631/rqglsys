@@ -32,8 +32,10 @@ echo "✓ 使用命令: $COMPOSE_CMD"
 echo ""
 
 # 停止并删除旧容器
-echo "1. 停止并删除旧容器..."
-$COMPOSE_CMD down
+echo "1. 停止并清理旧容器..."
+$COMPOSE_CMD down 2>/dev/null || true
+docker rm -f gas-backend gas-frontend 2>/dev/null || true
+docker network prune -f 2>/dev/null || true
 echo ""
 
 # 构建并启动服务

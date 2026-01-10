@@ -252,8 +252,16 @@ clone_project() {
 start_services() {
     COMPOSE_CMD=$(get_compose_command)
     
-    print_info "停止旧容器..."
+    print_info "停止并清理旧容器..."
+    
+    # 停止 docker-compose 管理的容器
     $COMPOSE_CMD down 2>/dev/null || true
+    
+    # 强制删除可能残留的容器
+    docker rm -f gas-backend gas-frontend 2>/dev/null || true
+    
+    # 清理未使用的网络
+    docker network prune -f 2>/dev/null || true
     
     print_info "构建并启动服务..."
     $COMPOSE_CMD up -d --build
