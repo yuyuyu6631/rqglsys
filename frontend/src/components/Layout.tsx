@@ -61,11 +61,15 @@ export default function Layout({ user, onLogout }: LayoutProps) {
         <div className="app-shell">
             {/* Sidebar */}
             <aside className={`sidebar ${!isSidebarOpen ? 'collapsed' : ''}`}>
-                <div className="p-6 border-b border-gray-800 flex items-center gap-3">
-                    <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shrink-0 shadow-lg shadow-blue-500/20">
-                        <ShoppingBag className="text-white" size={20} />
+                <div className="p-7 border-b border-gray-800/50 flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 bg-gradient-to-br from-purple-500 via-pink-500 to-rose-500 shadow-2xl shadow-purple-500/30">
+                        <ShoppingBag className="text-white" size={22} />
                     </div>
-                    {isSidebarOpen && <span className="font-bold text-lg text-white truncate">燃气智能管理</span>}
+                    {isSidebarOpen && (
+                        <span className="font-bold text-lg text-white truncate bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+                            燃气智能管理
+                        </span>
+                    )}
                 </div>
 
                 <nav className="flex-1 py-6 overflow-y-auto">
@@ -79,19 +83,19 @@ export default function Layout({ user, onLogout }: LayoutProps) {
                             >
                                 <item.icon size={20} className="shrink-0" />
                                 {isSidebarOpen && <span className="truncate">{item.label}</span>}
-                                {isSidebarOpen && isActive && <ChevronRight size={14} className="ml-auto opacity-50" />}
+                                {isSidebarOpen && isActive && <ChevronRight size={16} className="ml-auto opacity-70" />}
                             </Link>
                         );
                     })}
                 </nav>
 
-                <div className="p-4 border-t border-gray-800">
+                <div className="p-4 border-t border-gray-800/50">
                     <button
                         onClick={handleLogout}
                         className="menu-item w-full text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 border-none m-0"
                     >
                         <LogOut size={20} className="shrink-0" />
-                        {isSidebarOpen && <span className="font-medium">退出系统</span>}
+                        {isSidebarOpen && <span className="font-semibold">退出系统</span>}
                     </button>
                 </div>
             </aside>
@@ -102,17 +106,21 @@ export default function Layout({ user, onLogout }: LayoutProps) {
                 <header className="header">
                     <button
                         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                        className="p-2 hover:bg-white/5 rounded-lg text-gray-400 transition-colors"
+                        className="p-2.5 hover:bg-white/10 rounded-xl text-gray-400 hover:text-white transition-all"
                     >
-                        {isSidebarOpen ? <Menu size={20} /> : <Menu size={20} />}
+                        <Menu size={22} />
                     </button>
 
                     <div className="flex items-center gap-4">
                         <div className="hidden md:block text-right">
-                            <div className="text-sm font-bold text-white leading-tight">{user?.real_name || user?.username}</div>
-                            <div className="text-[11px] text-gray-500 uppercase tracking-tighter">{user?.role}</div>
+                            <div className="text-sm font-bold text-white leading-tight">
+                                {user?.real_name || user?.username}
+                            </div>
+                            <div className="text-[11px] text-gray-500 uppercase tracking-wider font-medium">
+                                {user?.role}
+                            </div>
                         </div>
-                        <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 font-bold shadow-inner">
+                        <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold shadow-lg shadow-purple-500/30 ring-2 ring-purple-500/20">
                             {user?.username[0].toUpperCase()}
                         </div>
                     </div>
