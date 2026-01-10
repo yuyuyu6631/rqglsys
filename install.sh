@@ -152,6 +152,20 @@ install_docker_compose() {
     print_success "Docker Compose 安装完成"
 }
 
+# 获取 docker compose 命令
+get_compose_command() {
+    # 优先使用 docker compose (新版)
+    if docker compose version &> /dev/null; then
+        echo "docker compose"
+    # 回退到 docker-compose (旧版)
+    elif command -v docker-compose &> /dev/null; then
+        echo "docker-compose"
+    else
+        print_error "Docker Compose 未安装"
+        exit 1
+    fi
+}
+
 # 安装 Git
 install_git() {
     if command -v git &> /dev/null; then
@@ -220,11 +234,13 @@ clone_project() {
 
 # 启动服务
 start_services() {
+    COMPOSE_CMD=$(get_compose_command)
+    
     print_info "停止旧容器..."
-    docker-compose down 2>/dev/null || true
+    $COMPOSE_CMD down 2>/dev/null || true
     
     print_info "构建并启动服务..."
-    docker-compose up -d --build
+    $COMPOSE_CMD up -d --build
     
     print_info "等待服务启动 (30秒)..."
     sleep 30
@@ -233,7 +249,7 @@ start_services() {
     if docker ps | grep -q gas-backend && docker ps | grep -q gas-frontend; then
         print_success "容器启动成功"
     else
-        print_error "容器启动失败,请检查日志: docker-compose logs"
+        print_error "容器启动失败,请检查日志: $COMPOSE_CMD logs"
         exit 1
     fi
 }
@@ -258,7 +274,8 @@ init_database() {
     
     if [ $attempt -eq $max_attempts ]; then
         print_error "后端服务启动超时"
-        docker-compose logs backend
+        COMPOSE_CMD=$(get_compose_command)
+        $COMPOSE_CMD logs backend
         exit 1
     fi
     
@@ -281,11 +298,12 @@ show_info() {
     echo "  管理员: admin / 123456"
     echo "  用户:   user1 / 123456"
     echo ""
+    COMPOSE_CMD=$(get_compose_command)
     echo "常用命令:"
-    echo "  查看日志:   docker-compose logs -f"
-    echo "  停止服务:   docker-compose down"
-    echo "  重启服务:   docker-compose restart"
-    echo "  查看状态:   docker-compose ps"
+    echo "  查看日志:   $COMPOSE_CMD logs -f"
+    echo "  停止服务:   $COMPOSE_CMD down"
+    echo "  重启服务:   $COMPOSE_CMD restart"
+    echo "  查看状态:   $COMPOSE_CMD ps"
     echo ""
     echo "项目目录: $PROJECT_DIR"
     echo ""
