@@ -18,7 +18,28 @@ from app.validators import (
 
 api_bp = Blueprint('api', __name__)
 
+# ==================== 健康检查 ====================
+
+@api_bp.route('/health', methods=['GET'])
+def health_check():
+    """健康检查端点,用于 Docker 容器健康检查"""
+    try:
+        # 检查数据库连接
+        db.session.execute('SELECT 1')
+        return jsonify({
+            'status': 'healthy',
+            'database': 'connected',
+            'timestamp': datetime.now().isoformat()
+        }), 200
+    except Exception as e:
+        return jsonify({
+            'status': 'unhealthy',
+            'error': str(e),
+            'timestamp': datetime.now().isoformat()
+        }), 500
+
 # ==================== 用户管理 ====================
+
 
 @api_bp.route('/users', methods=['GET'])
 @login_required
