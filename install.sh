@@ -214,40 +214,31 @@ clone_project() {
     
     # 检查是否存在项目目录
     if [ -d "$PROJECT_DIR" ]; then
-        print_warning "检测到项目目录已存在: $PROJECT_DIR"
-        
         # 检查是否是有效的 git 仓库
         if [ -d "$PROJECT_DIR/.git" ]; then
-            print_info "检测到有效的 Git 仓库"
             cd "$PROJECT_DIR"
             
             # 检查远程仓库地址
             REMOTE_URL=$(git config --get remote.origin.url 2>/dev/null || echo "")
             if [[ "$REMOTE_URL" == *"yuyuyu6631/rqglsys"* ]]; then
-                print_success "确认是正确的项目仓库"
-                print_info "更新现有项目代码..."
+                print_info "检测到现有项目,自动更新到最新版本..."
                 
                 # 保存本地修改(如果有)
                 git stash save "Auto-stash before update $(date +%Y%m%d_%H%M%S)" 2>/dev/null || true
                 
-                # 拉取最新代码
+                # 强制更新到最新代码
                 git fetch origin main
                 git reset --hard origin/main
+                git clean -fd
                 
-                print_success "项目代码已更新到最新版本"
+                print_success "项目已更新到最新版本"
                 return 0
-            else
-                print_warning "目录中的仓库地址不匹配: $REMOTE_URL"
             fi
-        else
-            print_warning "目录存在但不是 Git 仓库"
         fi
         
-        # 备份旧目录
-        BACKUP_DIR="${PROJECT_DIR}_backup_$(date +%Y%m%d_%H%M%S)"
-        print_info "备份旧目录到: $BACKUP_DIR"
-        mv "$PROJECT_DIR" "$BACKUP_DIR"
-        print_success "旧目录已备份"
+        # 如果不是正确的仓库,直接删除重建
+        print_info "清理旧目录并重新克隆..."
+        rm -rf "$PROJECT_DIR"
     fi
     
     # 克隆新项目
@@ -255,13 +246,6 @@ clone_project() {
     git clone https://github.com/yuyuyu6631/rqglsys.git "$PROJECT_DIR"
     cd "$PROJECT_DIR"
     print_success "项目克隆完成"
-    
-    # 清理超过3个的备份目录
-    BACKUP_COUNT=$(ls -d /opt/gas-system_backup_* 2>/dev/null | wc -l)
-    if [ "$BACKUP_COUNT" -gt 3 ]; then
-        print_info "清理旧备份(保留最新3个)..."
-        ls -dt /opt/gas-system_backup_* | tail -n +4 | xargs rm -rf
-    fi
 }
 
 # 启动服务
