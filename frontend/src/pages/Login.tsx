@@ -51,18 +51,25 @@ export default function Login({ onLogin }: LoginProps) {
     };
 
     return (
-        <div className="min-h-screen bg-[#0d1117] flex items-center justify-center p-4 relative overflow-hidden">
-            {/* 背景光效 */}
-            <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-500/10 rounded-full blur-[120px]"></div>
-            <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-500/10 rounded-full blur-[120px]"></div>
+        <div
+            className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden"
+            style={{
+                backgroundImage: 'url(/assets/system-bg.png)',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat'
+            }}
+        >
+            {/* 半透明遮罩层提高可读性 */}
+            <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]"></div>
 
             <div className="w-full max-w-md animate-fade-in relative z-10">
                 <div className="text-center mb-10">
                     <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-500 rounded-2xl shadow-lg shadow-blue-500/30 mb-6 group transition-transform hover:scale-110">
                         <Flame className="text-white w-8 h-8" />
                     </div>
-                    <h1 className="text-3xl font-extrabold text-white tracking-tight mb-2">燃气智能配送系统</h1>
-                    <p className="text-gray-500 font-medium">Gas Operation Management System</p>
+                    <h1 className="text-3xl font-extrabold text-white tracking-tight mb-2">燃气管理系统</h1>
+                    <p className="text-gray-500 font-medium">Gas Management System</p>
                 </div>
 
                 <div className="card p-8 border-white/5 backdrop-blur-sm bg-[#161b22]/90">
@@ -135,15 +142,15 @@ export default function Login({ onLogin }: LoginProps) {
                         <div className="text-xs text-gray-500 mb-4 font-medium text-center uppercase tracking-widest">快速体验账号</div>
                         <div className="grid grid-cols-2 gap-3 text-xs">
                             <button onClick={() => quickLogin('admin', '123456')} className="p-2 bg-rose-500/5 border border-rose-500/20 text-rose-400 rounded-lg hover:bg-rose-500/10 transition-colors">管理员 (admin)</button>
-                            <button onClick={() => quickLogin('station1', '123456')} className="p-2 bg-indigo-500/5 border border-indigo-500/20 text-indigo-400 rounded-lg hover:bg-indigo-500/10 transition-colors">站长 (station1)</button>
-                            <button onClick={() => quickLogin('delivery1', '123456')} className="p-2 bg-emerald-500/5 border border-emerald-500/20 text-emerald-400 rounded-lg hover:bg-emerald-500/10 transition-colors">配送员 (delivery1)</button>
-                            <button onClick={() => quickLogin('user1', '123456')} className="p-2 bg-blue-500/5 border border-blue-500/20 text-blue-400 rounded-lg hover:bg-blue-500/10 transition-colors">普通客户 (user1)</button>
+                            <button onClick={() => quickLogin('station01', '123456')} className="p-2 bg-indigo-500/5 border border-indigo-500/20 text-indigo-400 rounded-lg hover:bg-indigo-500/10 transition-colors">站长 (station01)</button>
+                            <button onClick={() => quickLogin('zhao_q', '123456')} className="p-2 bg-emerald-500/5 border border-emerald-500/20 text-emerald-400 rounded-lg hover:bg-emerald-500/10 transition-colors">配送员 (zhao_q)</button>
+                            <button onClick={() => quickLogin('customer_demo', '123456')} className="p-2 bg-blue-500/5 border border-blue-500/20 text-blue-400 rounded-lg hover:bg-blue-500/10 transition-colors">客户 (customer_demo)</button>
                         </div>
                     </div>
                 </div>
 
                 <p className="mt-8 text-center text-xs text-gray-600">
-                    &copy; 2024 Gas Intelligent Operation System. All rights reserved.
+                    &copy; 2024 Gas Management System. All rights reserved.
                 </p>
             </div>
         </div>

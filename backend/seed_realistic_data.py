@@ -17,13 +17,13 @@ def seed_data():
         
         # 2. Users
         users_to_create = [
-            {"username": "admin", "role": "admin", "real_name": "系统管理员", "password": "admin666", "phone": "13800138000"},
-            {"username": "station01", "role": "station", "real_name": "城南供应站", "password": "password123", "phone": "010-66778899"},
-            {"username": "zhao_q", "role": "delivery", "real_name": "赵强", "password": "password123", "phone": "13912345678"},
-            {"username": "wang_w", "role": "delivery", "real_name": "王伟", "password": "password123", "phone": "13788776655"},
-            {"username": "li_ming", "role": "user", "real_name": "李明", "password": "password123", "phone": "13500001111"},
-            {"username": "zhang_j", "role": "user", "real_name": "张静", "password": "password123", "phone": "13699998888"},
-            {"username": "customer_demo", "role": "user", "real_name": "陈先生", "password": "password123", "phone": "18822334455"}
+            {"username": "admin", "role": "admin", "real_name": "系统管理员", "password": "123456", "phone": "13800138000"},
+            {"username": "station01", "role": "station", "real_name": "城南供应站", "password": "123456", "phone": "010-66778899"},
+            {"username": "zhao_q", "role": "delivery", "real_name": "赵强", "password": "123456", "phone": "13912345678"},
+            {"username": "wang_w", "role": "delivery", "real_name": "王伟", "password": "123456", "phone": "13788776655"},
+            {"username": "li_ming", "role": "user", "real_name": "李明", "password": "123456", "phone": "13500001111"},
+            {"username": "zhang_j", "role": "user", "real_name": "张静", "password": "123456", "phone": "13699998888"},
+            {"username": "customer_demo", "role": "user", "real_name": "陈先生", "password": "123456", "phone": "18822334455"}
         ]
         
         user_objs = {}
@@ -150,4 +150,7 @@ def seed_data():
         print("Success: Realistic data seeded.")
 
 if __name__ == "__main__":
-    seed_data()
+    try:
+        seed_data()
+    except Exception as e:
+        print(f"Error seeding data: {e}")

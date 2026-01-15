@@ -67,7 +67,7 @@ export default function Layout({ user, onLogout }: LayoutProps) {
                     </div>
                     {isSidebarOpen && (
                         <span className="font-bold text-lg text-white truncate bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-                            燃气智能管理
+                            燃气管理系统
                         </span>
                     )}
                 </div>

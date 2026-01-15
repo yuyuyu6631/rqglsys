@@ -42,8 +42,16 @@ def login():
     if not username or not password:
         return jsonify({'error': '用户名和密码不能为空'}), 400
     
+    print(f"[DEBUG] Login attempt for: {username}")
     user = User.query.filter_by(username=username).first()
     
+    if user:
+        print(f"[DEBUG] User found. Hash: {user.password_hash}")
+        is_valid = user.check_password(password)
+        print(f"[DEBUG] Password valid? {is_valid}")
+    else:
+        print(f"[DEBUG] User not found")
+
     if not user or not user.check_password(password):
         return jsonify({'error': '用户名或密码错误'}), 401
     
