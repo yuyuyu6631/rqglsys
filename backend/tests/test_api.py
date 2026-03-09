@@ -19,9 +19,11 @@ class APITestCase(unittest.TestCase):
     
     def setUp(self):
         """测试前准备"""
-        self.app = create_app()
-        self.app.config['TESTING'] = True
-        self.app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
+        # 使用独立的内存数据库，避免与实际数据库数据冲突
+        self.app = create_app({
+            'TESTING': True,
+            'SQLALCHEMY_DATABASE_URI': 'sqlite:///:memory:'
+        })
         self.client = self.app.test_client()
         self.app_context = self.app.app_context()
         self.app_context.push()
