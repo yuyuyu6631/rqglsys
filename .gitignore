@@ -23,6 +23,7 @@ MANIFEST
 *.log
 .env
 .venv
+.venv312/
 env/
 venv/
 ENV/

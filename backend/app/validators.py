@@ -1,49 +1,51 @@
-"""
-参数验证工具模块
-提供常用的参数验证装饰器和验证函数
-"""
-from functools import wraps
-from flask import request, jsonify
+"""Shared request validation helpers for backend APIs."""
+
 import re
 from datetime import datetime
+from functools import wraps
+
+from flask import jsonify, request
 
 
 def validate_required_fields(required_fields):
-    """验证必填字段装饰器"""
+    """Validate required JSON fields."""
+
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
-            data = request.get_json()
-            if not data:
+            data = request.get_json(silent=True)
+            if not isinstance(data, dict):
                 return jsonify({'error': '请求体不能为空'}), 400
-            
-            missing_fields = [field for field in required_fields if not data.get(field)]
+
+            missing_fields = []
+            for field in required_fields:
+                value = data.get(field)
+                if value is None:
+                    missing_fields.append(field)
+                elif isinstance(value, str) and not value.strip():
+                    missing_fields.append(field)
+
             if missing_fields:
-                return jsonify({
-                    'error': f'缺少必填字段: {", ".join(missing_fields)}'
-                }), 400
-            
+                return jsonify({'error': f'缺少必填字段: {", ".join(missing_fields)}'}), 400
+
             return f(*args, **kwargs)
+
         return decorated_function
+
     return decorator
 
 
 def validate_cylinder_specs(specs):
-    """验证钢瓶规格"""
-    valid_specs = ['5kg', '15kg', '50kg']
-    return specs in valid_specs
+    return specs in ['5kg', '15kg', '50kg']
 
 
 def validate_phone(phone):
-    """验证手机号"""
     if not phone:
-        return True  # 允许为空
-    pattern = r'^1[3-9]\d{9}$'
-    return re.match(pattern, phone) is not None
+        return True
+    return re.fullmatch(r'1[3-9]\d{9}', str(phone)) is not None
 
 
 def validate_date_format(date_str):
-    """验证日期格式 YYYY-MM-DD"""
     if not date_str:
         return True
     try:
@@ -54,7 +56,6 @@ def validate_date_format(date_str):
 
 
 def validate_date_range(start_date_str, end_date_str):
-    """验证日期范围（结束日期必须晚于开始日期）"""
     if not start_date_str or not end_date_str:
         return True
     try:
@@ -66,42 +67,32 @@ def validate_date_range(start_date_str, end_date_str):
 
 
 def validate_user_role(role):
-    """验证用户角色"""
-    valid_roles = ['admin', 'station', 'delivery', 'user']
-    return role in valid_roles
+    return role in ['admin', 'station', 'delivery', 'user']
 
 
 def validate_cylinder_status(status):
-    """验证钢瓶状态"""
-    valid_statuses = ['in_stock', 'delivering', 'in_use', 'empty']
-    return status in valid_statuses
+    return status in ['in_stock', 'delivering', 'in_use', 'empty']
 
 
 def validate_order_status(status):
-    """验证订单状态"""
-    valid_statuses = ['pending', 'assigned', 'delivering', 'completed', 'cancelled']
-    return status in valid_statuses
+    return status in ['pending', 'assigned', 'delivering', 'completed', 'cancelled']
 
 
 def validate_hazard_level(level):
-    """验证隐患等级"""
-    valid_levels = ['none', 'low', 'medium', 'high']
-    return level in valid_levels
+    return level in ['none', 'low', 'medium', 'high']
 
 
 def validate_rating_score(score):
-    """验证评分（1-5星）"""
     try:
         score_int = int(score)
-        return 1 <= score_int <= 5
-    except (ValueError, TypeError):
+    except (TypeError, ValueError):
         return False
+    return 1 <= score_int <= 5
 
 
 def validate_positive_integer(value):
-    """验证正整数"""
     try:
         int_value = int(value)
-        return int_value > 0
-    except (ValueError, TypeError):
+    except (TypeError, ValueError):
         return False
+    return int_value > 0

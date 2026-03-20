@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { orderApi } from '../services/api';
+import { getErrorMessage } from '../utils/apiError';
 
 export default function UserOrder() {
     const navigate = useNavigate();
@@ -35,8 +36,8 @@ export default function UserOrder() {
             });
             setSuccess(true);
             setTimeout(() => navigate('/user/orders'), 2000);
-        } catch (err: any) {
-            alert(err.response?.data?.error || '下单失败');
+        } catch (err) {
+            alert(getErrorMessage(err, '下单失败'));
         } finally {
             setLoading(false);
         }

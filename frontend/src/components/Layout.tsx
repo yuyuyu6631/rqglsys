@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Outlet, useNavigate, useLocation, Link } from 'react-router-dom';
+import type { LucideIcon } from 'lucide-react';
 import {
     LayoutDashboard, Package, ShoppingBag,
     ShieldCheck, Users, Bell, LogOut, Menu,
@@ -29,7 +30,7 @@ export default function Layout({ user, onLogout }: LayoutProps) {
         }
     };
 
-    const menuConfig: Record<string, { icon: any; label: string; path: string }[]> = {
+    const menuConfig: Record<string, { icon: LucideIcon; label: string; path: string }[]> = {
         admin: [
             { icon: LayoutDashboard, label: '数据看板', path: '/admin' },
             { icon: Package, label: '钢瓶管理', path: '/admin/cylinders' },

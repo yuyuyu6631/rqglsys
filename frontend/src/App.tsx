@@ -28,7 +28,7 @@ export default function App() {
     try {
       const res = await authApi.getCurrentUser();
       setUser(res.data);
-    } catch (err) {
+    } catch {
       setUser(null);
     } finally {
       setLoading(false);

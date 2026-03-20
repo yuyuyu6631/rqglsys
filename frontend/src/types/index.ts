@@ -11,7 +11,7 @@ export interface User {
 export interface Cylinder {
     id: number;
     serial_code: string;
-    specs: string;
+    specs: '5kg' | '15kg' | '50kg' | string;
     status: 'in_stock' | 'delivering' | 'in_use' | 'empty';
     manufacturer?: string;
     manufacture_date?: string;
@@ -37,6 +37,8 @@ export interface Order {
     contact_name: string;
     contact_phone: string;
     remark?: string;
+    allocated_cylinder_ids?: number[];
+    allocated_cylinders?: string[];
     created_at?: string;
     assigned_at?: string;
     completed_at?: string;
@@ -52,7 +54,7 @@ export interface SafetyRecord {
     hazard_level: 'none' | 'low' | 'medium' | 'high';
     hazard_description?: string;
     photos?: string[];
-    rectify_status?: string;
+    rectify_status?: 'pending' | 'completed' | null | string;
     rectify_photos?: string[];
     created_at?: string;
 }
@@ -67,16 +69,30 @@ export interface Announcement {
     created_at?: string;
 }
 
+export interface Rating {
+    id: number;
+    order_id: number;
+    user_id: number;
+    score: number;
+    comment?: string;
+    created_at?: string;
+}
+
 export interface DashboardStats {
     total_orders: number;
     pending_orders: number;
+    assigned_orders?: number;
+    delivering_orders?: number;
     completed_orders: number;
+    cancelled_orders?: number;
     total_cylinders: number;
     in_stock: number;
     total_users: number;
     total_delivery: number;
     today_orders: number;
     today_revenue: number;
+    hazard_pending?: number;
+    expiring_soon?: number;
 }
 
 export interface OrderTrend {
@@ -89,6 +105,16 @@ export interface DeliveryRanking {
     username: string;
     real_name: string;
     order_count: number;
+}
+
+export interface CylinderSpecStat {
+    specs: string;
+    count: number;
+}
+
+export interface UploadPhotoResponse {
+    filename: string;
+    url: string;
 }
 
 export interface ApiResponse<T> {

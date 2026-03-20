@@ -1,23 +1,21 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-    Lock, User as UserIcon, LogIn, ShieldCheck,
-    Flame, ArrowRight, Eye, EyeOff
-} from 'lucide-react';
+import { ArrowRight, Eye, EyeOff, Flame, Lock, LogIn, ShieldCheck, User as UserIcon } from 'lucide-react';
 import { authApi } from '../services/api';
 import type { User } from '../types/index';
+import { getErrorMessage } from '../utils/apiError';
 
 interface LoginProps {
     onLogin: (user: User) => void;
 }
 
 export default function Login({ onLogin }: LoginProps) {
+    const quickLoginEnabled = import.meta.env.DEV && import.meta.env.VITE_ENABLE_QUICK_LOGIN === 'true';
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-
     const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -30,7 +28,6 @@ export default function Login({ onLogin }: LoginProps) {
             const user = res.data.user;
             onLogin(user);
 
-            // 根据角色跳转
             const routes: Record<string, string> = {
                 admin: '/admin',
                 station: '/admin',
@@ -38,16 +35,17 @@ export default function Login({ onLogin }: LoginProps) {
                 user: '/user',
             };
             navigate(routes[user.role] || '/');
-        } catch (err: any) {
-            setError(err.response?.data?.error || '登录失败，请检查用户名和密码');
+        } catch (err) {
+            setError(getErrorMessage(err, '登录失败，请检查用户名和密码'));
         } finally {
             setLoading(false);
         }
     };
 
-    const quickLogin = (u: string, p: string) => {
-        setUsername(u);
-        setPassword(p);
+    const quickLogin = (targetUsername: string, targetPassword: string) => {
+        if (!quickLoginEnabled) return;
+        setUsername(targetUsername);
+        setPassword(targetPassword);
     };
 
     return (
@@ -57,10 +55,9 @@ export default function Login({ onLogin }: LoginProps) {
                 backgroundImage: 'url(/assets/system-bg.png)',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
-                backgroundRepeat: 'no-repeat'
+                backgroundRepeat: 'no-repeat',
             }}
         >
-            {/* 半透明遮罩层提高可读性 */}
             <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]"></div>
 
             <div className="w-full max-w-md animate-fade-in relative z-10">
@@ -83,7 +80,7 @@ export default function Login({ onLogin }: LoginProps) {
                                     value={username}
                                     onChange={(e) => setUsername(e.target.value)}
                                     className="input pl-12"
-                                    placeholder="请输入您的账号"
+                                    placeholder="请输入账号"
                                     required
                                 />
                             </div>
@@ -92,16 +89,16 @@ export default function Login({ onLogin }: LoginProps) {
                         <div className="form-group">
                             <label className="form-label flex justify-between">
                                 密码
-                                <span className="text-xs text-blue-500 hover:underline cursor-pointer">忘记密码?</span>
+                                <span className="text-xs text-gray-500">请使用真实账号登录</span>
                             </label>
                             <div className="relative group">
                                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-blue-400 transition-colors" size={18} />
                                 <input
-                                    type={showPassword ? "text" : "password"}
+                                    type={showPassword ? 'text' : 'password'}
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     className="input pl-12 pr-12"
-                                    placeholder="请输入您的密码"
+                                    placeholder="请输入密码"
                                     required
                                 />
                                 <button
@@ -121,11 +118,7 @@ export default function Login({ onLogin }: LoginProps) {
                             </div>
                         )}
 
-                        <button
-                            type="submit"
-                            className="btn btn-primary w-full py-4 text-base font-bold transition-all hover:gap-3"
-                            disabled={loading}
-                        >
+                        <button type="submit" className="btn btn-primary w-full py-4 text-base font-bold transition-all hover:gap-3" disabled={loading}>
                             {loading ? (
                                 <div className="loading-spinner w-5 h-5 border-2"></div>
                             ) : (
@@ -138,20 +131,21 @@ export default function Login({ onLogin }: LoginProps) {
                         </button>
                     </form>
 
-                    <div className="mt-8 pt-6 border-t border-gray-800">
-                        <div className="text-xs text-gray-500 mb-4 font-medium text-center uppercase tracking-widest">快速体验账号</div>
-                        <div className="grid grid-cols-2 gap-3 text-xs">
-                            <button onClick={() => quickLogin('admin', '123456')} className="p-2 bg-rose-500/5 border border-rose-500/20 text-rose-400 rounded-lg hover:bg-rose-500/10 transition-colors">管理员 (admin)</button>
-                            <button onClick={() => quickLogin('station01', '123456')} className="p-2 bg-indigo-500/5 border border-indigo-500/20 text-indigo-400 rounded-lg hover:bg-indigo-500/10 transition-colors">站长 (station01)</button>
-                            <button onClick={() => quickLogin('zhao_q', '123456')} className="p-2 bg-emerald-500/5 border border-emerald-500/20 text-emerald-400 rounded-lg hover:bg-emerald-500/10 transition-colors">配送员 (zhao_q)</button>
-                            <button onClick={() => quickLogin('customer_demo', '123456')} className="p-2 bg-blue-500/5 border border-blue-500/20 text-blue-400 rounded-lg hover:bg-blue-500/10 transition-colors">客户 (customer_demo)</button>
+                    {quickLoginEnabled && (
+                        <div className="mt-8 pt-6 border-t border-gray-800">
+                            <div className="text-xs text-gray-500 mb-4 font-medium text-center uppercase tracking-widest">快速体验账号</div>
+                            <div className="grid grid-cols-2 gap-3 text-xs">
+                                <button onClick={() => quickLogin('admin', '123456')} className="p-2 bg-rose-500/5 border border-rose-500/20 text-rose-400 rounded-lg hover:bg-rose-500/10 transition-colors">管理员 (admin)</button>
+                                <button onClick={() => quickLogin('station01', '123456')} className="p-2 bg-indigo-500/5 border border-indigo-500/20 text-indigo-400 rounded-lg hover:bg-indigo-500/10 transition-colors">站长 (station01)</button>
+                                <button onClick={() => quickLogin('zhao_q', '123456')} className="p-2 bg-emerald-500/5 border border-emerald-500/20 text-emerald-400 rounded-lg hover:bg-emerald-500/10 transition-colors">配送员 (zhao_q)</button>
+                                <button onClick={() => quickLogin('customer_demo', '123456')} className="p-2 bg-blue-500/5 border border-blue-500/20 text-blue-400 rounded-lg hover:bg-blue-500/10 transition-colors">客户 (customer_demo)</button>
+                            </div>
+                            <div className="mt-3 text-[11px] text-gray-600 text-center">仅本地开发环境可见</div>
                         </div>
-                    </div>
+                    )}
                 </div>
 
-                <p className="mt-8 text-center text-xs text-gray-600">
-                    &copy; 2024 Gas Management System. All rights reserved.
-                </p>
+                <p className="mt-8 text-center text-xs text-gray-600">&copy; 2024 Gas Management System. All rights reserved.</p>
             </div>
         </div>
     );
